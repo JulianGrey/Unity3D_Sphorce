@@ -1,49 +1,40 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// This script simply handles the background colour of the camera, setting a random colour.
-// This is purely because I couldn't decide on a background theme, and you can't go wrong
-// with a handful of colours that change up the way a game looks.
+public class CameraScript : MonoBehaviour {
 
-public class CameraScript : MonoBehaviour
-{
-	private Color cyan = new Color(86.0f/255.0f, 175.0f/255.0f, 159.0f/255.0f, 1.0f);
-	private Color yellow = new Color(182.0f/255.0f, 183.0f/255.0f, 88.0f/255.0f, 1.0f);
-	private Color green = new Color(103.0f/255.0f, 198.0f/255.0f, 88.0f/255.0f, 1.0f);
-	private Color blue = new Color(71.0f/255.0f, 104.0f/255.0f, 227.0f/255.0f, 1.0f);
-	private Color orange = new Color(225.0f/255.0f, 129.0f/255.0f, 71.0f/255.0f, 1.0f);
-	private Color purple = new Color(122.0f/255.0f, 57.0f/255.0f, 123.0f/255.0f, 1.0f);
+    private Color cyan = new Color(86.0f/255.0f, 175.0f/255.0f, 159.0f/255.0f, 1.0f);
+    private Color yellow = new Color(182.0f/255.0f, 183.0f/255.0f, 88.0f/255.0f, 1.0f);
+    private Color green = new Color(103.0f/255.0f, 198.0f/255.0f, 88.0f/255.0f, 1.0f);
+    private Color blue = new Color(71.0f/255.0f, 104.0f/255.0f, 227.0f/255.0f, 1.0f);
+    private Color orange = new Color(225.0f/255.0f, 129.0f/255.0f, 71.0f/255.0f, 1.0f);
+    private Color purple = new Color(122.0f/255.0f, 57.0f/255.0f, 123.0f/255.0f, 1.0f);
 
-	private int rndNum;
+    private int rndNum;
 
-	// Use this for initialization
-	void Start()
-	{
-		rndNum = Random.Range(0, 6); // Choose a random number
+    void Start() {
+        rndNum = Random.Range(0, 6);
+        camera.clearFlags = CameraClearFlags.Color;
 
-		camera.clearFlags = CameraClearFlags.Color; // Remove any value currently attached to the camera's background colour
-
-		// Choose a colour based on the number given to the rndNum variable
-		switch(rndNum)
-		{
-			case 0:
-				camera.backgroundColor = cyan;
-				break;
-			case 1:
-				camera.backgroundColor = yellow;
-				break;
-			case 2:
-				camera.backgroundColor = green;
-				break;
-			case 3:
-				camera.backgroundColor = blue;
-				break;
-			case 4:
-				camera.backgroundColor = orange;
-				break;
-			case 5:
-				camera.backgroundColor = purple;
-				break;
-		}
-	}
+        switch(rndNum) {
+            case 0:
+                camera.backgroundColor = cyan;
+                break;
+            case 1:
+                camera.backgroundColor = yellow;
+                break;
+            case 2:
+                camera.backgroundColor = green;
+                break;
+            case 3:
+                camera.backgroundColor = blue;
+                break;
+            case 4:
+                camera.backgroundColor = orange;
+                break;
+            case 5:
+                camera.backgroundColor = purple;
+                break;
+        }
+    }
 }
