@@ -14,26 +14,26 @@ public class CameraScript : MonoBehaviour {
 
     void Start() {
         rndNum = Random.Range(0, 6);
-        camera.clearFlags = CameraClearFlags.Color;
+        GetComponent<Camera>().clearFlags = CameraClearFlags.Color;
 
         switch(rndNum) {
             case 0:
-                camera.backgroundColor = cyan;
+                GetComponent<Camera>().backgroundColor = cyan;
                 break;
             case 1:
-                camera.backgroundColor = yellow;
+                GetComponent<Camera>().backgroundColor = yellow;
                 break;
             case 2:
-                camera.backgroundColor = green;
+                GetComponent<Camera>().backgroundColor = green;
                 break;
             case 3:
-                camera.backgroundColor = blue;
+                GetComponent<Camera>().backgroundColor = blue;
                 break;
             case 4:
-                camera.backgroundColor = orange;
+                GetComponent<Camera>().backgroundColor = orange;
                 break;
             case 5:
-                camera.backgroundColor = purple;
+                GetComponent<Camera>().backgroundColor = purple;
                 break;
         }
     }
