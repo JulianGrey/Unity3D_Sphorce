@@ -5,10 +5,10 @@ public class ExitControl : MonoBehaviour {
     
     void Update() {
         if(GameObject.Find("Actions").GetComponent<GameControl>().canFinish) {
-            gameObject.renderer.enabled = false;
+            gameObject.GetComponent<Renderer>().enabled = false;
         }
         else {
-            gameObject.renderer.enabled = true;
+            gameObject.GetComponent<Renderer>().enabled = true;
         }
     }
 }
