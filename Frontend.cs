@@ -15,18 +15,18 @@ public class Frontend : MonoBehaviour {
 
     void OnGUI() {
         if(!howToPlay && !settings) {
-            if(GUI.Button(new Rect((Screen.width / 2) - 102, (Screen.height / 2) - 60, 204, 60), "Start Game", customMenuGUI)) { // Desktop: (Screen.height / 2) - 75 | Web: (Screen.height / 2) - 60
+            if(GUI.Button(new Rect((Screen.width / 2) - 102, (Screen.height / 2) - 75, 204, 60), "Start Game", customMenuGUI)) { // Desktop: (Screen.height / 2) - 75 | Web: (Screen.height / 2) - 60
                 Application.LoadLevel("Level_01");
             }
-            if(GUI.Button(new Rect((Screen.width / 2) - 102, (Screen.height / 2), 204, 60), "Settings", customMenuGUI)) { // Desktop: (Screen.height / 2) - 15 | Web: (Screen.height / 2)
+            if(GUI.Button(new Rect((Screen.width / 2) - 102, (Screen.height / 2) - 15, 204, 60), "Settings", customMenuGUI)) { // Desktop: (Screen.height / 2) - 15 | Web: (Screen.height / 2)
                 settings = true;
             }
-            if(GUI.Button(new Rect((Screen.width / 2) - 102, (Screen.height / 2) + 60, 204, 60), "How To Play", customMenuGUI)) { // Desktop: (Screen.height / 2) + 45 | Web: (Screen.height / 2) + 60
+            if(GUI.Button(new Rect((Screen.width / 2) - 102, (Screen.height / 2) + 45, 204, 60), "How To Play", customMenuGUI)) { // Desktop: (Screen.height / 2) + 45 | Web: (Screen.height / 2) + 60
                 howToPlay = true;
             }
-            /*if(GUI.Button (new Rect((Screen.width / 2) - 102, (Screen.height / 2) + 105, 204, 60), "Quit Game", customMenuGUI)) {
+            if(GUI.Button (new Rect((Screen.width / 2) - 102, (Screen.height / 2) + 105, 204, 60), "Quit Game", customMenuGUI)) {
                 Application.Quit();
-            }*/
+            }
             GUI.Box(new Rect((Screen.width / 2) - 50, Screen.height - 40, 100, 20), "Created and developed by Julian Grey", smallFontGUI);
         }
 
@@ -51,5 +51,9 @@ public class Frontend : MonoBehaviour {
                 howToPlay = false;
             }
         }
+    }
+
+    void Start() {
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
     }
 }
