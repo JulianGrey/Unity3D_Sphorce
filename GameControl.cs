@@ -18,15 +18,11 @@ public class GameControl : MonoBehaviour {
     private uint levelItems = 0;
 
     private float nextRespawnTime = 2.0f;
-    private float levelGravity = 9.81f;
+    private float levelGravity = 9.81f * 2.5f;
+    private float gyroscopeSensitivityModifier = 1.2f;
     
     public string nextLevel;
 
-    public bool northActive = false;
-    public bool eastActive = false;
-    public bool southActive = false;
-    public bool westActive = false;
-    
     public bool respawn = false;
     public bool levelWin = false;
     private bool levelStart = true;
@@ -37,6 +33,7 @@ public class GameControl : MonoBehaviour {
     private bool gameOver = false;
     private bool paused = false;
     private bool settings = false;
+    public bool cameraFollowBall = false;
 
     public GUIStyle customHUDGUI;
     public GUIStyle customMenuGUI;
@@ -50,6 +47,7 @@ public class GameControl : MonoBehaviour {
         gameOver = false;
         gameWin = false;
         Time.timeScale = 1.0f;
+		Screen.sleepTimeout = SleepTimeout.NeverSleep;
     }
 
     void OnGUI() {
@@ -58,25 +56,37 @@ public class GameControl : MonoBehaviour {
         if(GameObject.Find("Timer") != null) {
             GUI.Box(new Rect(Screen.width - 310, 10, 300, 60), "Timer: " + GameObject.Find("Timer").GetComponent<TimerScript>().truncTimer, customHUDGUI);
         }
+        if(GUI.Button(new Rect(Screen.width - 100, Screen.height - 50, 100, 50), "Menu", customHUDGUI)) {
+            PlaySelectSound();
+            LevelPause();
+        }
+        if(GUI.Button(new Rect(0, Screen.height - 50, 100, 50), "Camera", customHUDGUI)) {
+            if(cameraFollowBall) {
+                cameraFollowBall = false;
+            }
+            else {
+                cameraFollowBall = true;
+            }
+        }
 
         if(paused) {
             if(!settings) {
                 GUI.Box(new Rect(0, 0, Screen.width, Screen.height), "", fadeGUI);
                 GUI.Box(new Rect((Screen.width / 2) - 70, (Screen.height / 4) - 60, 140, 100), "PAUSED", titleGUI);
-                if(GUI.Button(new Rect((Screen.width / 2) - 102, (Screen.height / 2) - 60, 204, 60), "Resume Game", customMenuGUI)) { // Desktop: (Screen.height / 2) - 90 | Web: (Screen.height / 2) - 60
+                if(GUI.Button(new Rect((Screen.width / 2) - 102, (Screen.height / 2) - 90, 204, 60), "Resume Game", customMenuGUI)) { // Desktop: (Screen.height / 2) - 90 | Web: (Screen.height / 2) - 60
                     PlaySelectSound();
                     LevelPause();
                 }
-                if(GUI.Button(new Rect((Screen.width / 2) - 102, (Screen.height / 2), 204, 60), "Settings", customMenuGUI)) { // Desktop: (Screen.height / 2) - 30 | Web: (Screen.height / 2)
+                if(GUI.Button(new Rect((Screen.width / 2) - 102, (Screen.height / 2) - 30, 204, 60), "Settings", customMenuGUI)) { // Desktop: (Screen.height / 2) - 30 | Web: (Screen.height / 2)
                     settings = true;
                 }
-                if(GUI.Button(new Rect((Screen.width / 2) - 102, (Screen.height / 2) + 60, 204, 60), "To Main Menu", customMenuGUI)) { // Desktop: (Screen.height / 2) + 30 | Web: (Screen.height / 2) + 60
+                if(GUI.Button(new Rect((Screen.width / 2) - 102, (Screen.height / 2) + 30, 204, 60), "To Main Menu", customMenuGUI)) { // Desktop: (Screen.height / 2) + 30 | Web: (Screen.height / 2) + 60
                     LevelPause();
                     MainMenu();
                 }
-                /*if(GUI.Button(new Rect((Screen.width / 2) - 102, (Screen.height / 2) + 90, 204, 60), "Exit To Desktop", customMenuGUI)) {
+                if(GUI.Button(new Rect((Screen.width / 2) - 102, (Screen.height / 2) + 90, 204, 60), "Quit Game", customMenuGUI)) {
                     Application.Quit();
-                }*/
+                }
             }
         }
 
@@ -118,47 +128,40 @@ public class GameControl : MonoBehaviour {
 
     void Update() {
         if(!paused && !levelWin && !gameOver) {
-            if(Input.GetKeyDown(KeyCode.RightArrow)) {
-                Physics2D.gravity = new Vector2(levelGravity, 0);
+            //if(Input.GetKeyDown(KeyCode.RightArrow) || Input.acceleration.x > Input.acceleration.y) {
+            //    Physics2D.gravity = new Vector2(levelGravity, 0);
 
-                northActive = false;
-                eastActive = true;
-                southActive = false;
-                westActive = false;
+            //    if(!timing) {
+            //        timing = true;
+            //    }
+            //}
+            //else if(Input.GetKeyDown(KeyCode.LeftArrow) || Input.acceleration.x < Input.acceleration.y) {
+            //    Physics2D.gravity = new Vector2(-levelGravity, 0);
 
-                if(!timing) {
-                    timing = true;
-                }
-            }
-            if(Input.GetKeyDown(KeyCode.LeftArrow)) {
-                Physics2D.gravity = new Vector2(-levelGravity, 0);
-                northActive = false;
-                eastActive = false;
-                southActive = false;
-                westActive = true;
-                if(!timing) {
-                    timing = true;
-                }
-            }
-            if(Input.GetKeyDown(KeyCode.UpArrow)) {
-                Physics2D.gravity = new Vector2(0, levelGravity);
-                northActive = true;
-                eastActive = false;
-                southActive = false;
-                westActive = false;
-                if(!timing) {
-                    timing = true;
-                }
-            }
-            if(Input.GetKeyDown(KeyCode.DownArrow)) {
-                Physics2D.gravity = new Vector2(0, -levelGravity);
-                northActive = false;
-                eastActive = false;
-                southActive = true;
-                westActive = false;
-                if(!timing) {
-                    timing = true;
-                }
+            //    if(!timing) {
+            //        timing = true;
+            //    }
+            //}
+            //else if(Input.GetKeyDown(KeyCode.UpArrow) || Input.acceleration.y > Input.acceleration.x) {
+            //    Physics2D.gravity = new Vector2(0, levelGravity);
+
+            //    if(!timing) {
+            //        timing = true;
+            //    }
+            //}
+            //else if(Input.GetKeyDown(KeyCode.DownArrow) || Input.acceleration.y < Input.acceleration.x) {
+            //    Physics2D.gravity = new Vector2(0, -levelGravity);
+
+            //    if(!timing) {
+            //        timing = true;
+            //    }
+            //}
+
+            Physics2D.gravity = new Vector2(levelGravity * (Input.acceleration.x * gyroscopeSensitivityModifier),
+                                            levelGravity * (Input.acceleration.y * gyroscopeSensitivityModifier));
+
+            if(!timing) {
+                timing = true;
             }
         }
 
@@ -177,6 +180,7 @@ public class GameControl : MonoBehaviour {
                 gotItems = 0;
                 RemoveObjectives();
 
+                // Add a delay to the respawning of the objectives and ball
                 Invoke("AddObjectives", nextRespawnTime);
                 Invoke("AddBall", nextRespawnTime);
 
@@ -198,12 +202,14 @@ public class GameControl : MonoBehaviour {
             LevelWin();
         }
 
-        if(Input.GetKeyDown(KeyCode.Escape) && !levelWin && !gameOver) {
-            PlaySelectSound();
-            LevelPause();
+        if(!levelWin && !gameOver) {
+            if(Input.GetKeyDown(KeyCode.Escape)) {
+                PlaySelectSound();
+                LevelPause();
 
-            if(settings) {
-                settings = false;
+                if(settings) {
+                    settings = false;
+                }
             }
         }
     }
@@ -219,16 +225,15 @@ public class GameControl : MonoBehaviour {
         Application.LoadLevel("Frontend");
     }
 
-    void LevelLoad()
-    {
+    void LevelLoad() {
         if(levelWin) {
             if(!gameWin) {
-                if(Input.GetKeyDown(KeyCode.Space)) {
+                if(Input.GetKeyDown(KeyCode.Space) || Input.touchCount == 1) {
                     Application.LoadLevel(nextLevel);
                 }
             }
             else {
-                if(Input.GetKeyDown(KeyCode.Space)) {
+                if(Input.GetKeyDown(KeyCode.Space) || Input.touchCount == 1) {
                     MainMenu();
                 }
             }
@@ -237,11 +242,6 @@ public class GameControl : MonoBehaviour {
 
     void AddBall() {
         Physics2D.gravity = new Vector2(0, 0);
-
-        northActive = false;
-        eastActive = false;
-        southActive = false;
-        westActive = false;
 
         GameObject ballInstance = Instantiate(ball, ballSpawnPoint.position, Quaternion.identity) as GameObject;
         ballInstance.name = "Current Ball";
@@ -274,7 +274,7 @@ public class GameControl : MonoBehaviour {
     }
 
     void PlaySelectSound() {
-        audio.PlayOneShot(selectSound);
+        GetComponent<AudioSource>().PlayOneShot(selectSound);
     }
 
     void LevelPause() {
@@ -290,7 +290,7 @@ public class GameControl : MonoBehaviour {
 
     void LevelWin() {
         if(timing) {
-            audio.PlayOneShot(winSound);
+            GetComponent<AudioSource>().PlayOneShot(winSound);
 
             timing = false;
         }
@@ -306,7 +306,7 @@ public class GameControl : MonoBehaviour {
         livesLeft = 0;
 
         if(!gameOver) {
-            audio.PlayOneShot(gameOverMusic);
+            GetComponent<AudioSource>().PlayOneShot(gameOverMusic);
             gameOver = true;
         }
         timing = false;
