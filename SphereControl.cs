@@ -10,11 +10,6 @@ public class SphereControl : MonoBehaviour {
     public GameObject ballDeathAnim;
 
     private float pushForce = 19.62f;
-
-    public bool northActive = false;
-    public bool eastActive = false;
-    public bool southActive = false;
-    public bool westActive = false;
     
     private bool moveUp = false;
     private bool moveRight = false;
@@ -22,9 +17,10 @@ public class SphereControl : MonoBehaviour {
     private bool moveLeft = false;
 
     private bool ballExists;
+    private bool inVortex;
 
     void Start() {
-        audio.Stop();
+        GetComponent<AudioSource>().Stop();
         ballExists = true;
     }
 
@@ -57,8 +53,8 @@ public class SphereControl : MonoBehaviour {
             Destroy(collider.gameObject);
         }
         if(collider.gameObject.tag == "RightForce" || collider.gameObject.tag == "LeftForce" || collider.gameObject.tag == "UpForce" || collider.gameObject.tag == "DownForce") {
-            audio.clip = vortex;
-            audio.Play();
+            //GetComponent<AudioSource>().clip = vortex;
+            //GetComponent<AudioSource>().Play();
 
             if(collider.gameObject.tag == "RightForce") {
                 moveRight = true;
@@ -77,8 +73,8 @@ public class SphereControl : MonoBehaviour {
 
     void OnTriggerExit2D(Collider2D collider) {
         if(collider.gameObject.tag == "RightForce" || collider.gameObject.tag == "LeftForce" || collider.gameObject.tag == "UpForce" || collider.gameObject.tag == "DownForce") {
-            audio.clip = vortex;
-            audio.Stop();
+            //GetComponent<AudioSource>().clip = vortex;
+            //GetComponent<AudioSource>().Stop();
 
             if(collider.gameObject.tag == "RightForce") {
                 moveRight = false;
@@ -97,16 +93,24 @@ public class SphereControl : MonoBehaviour {
 
     void Update() {
         if(moveRight) {
-            rigidbody2D.AddForce(new Vector2(pushForce, 0));
+            GetComponent<Rigidbody2D>().AddForce(new Vector2(pushForce, 0));
         }
         if(moveLeft) {
-            rigidbody2D.AddForce(new Vector2(-pushForce, 0));
+            GetComponent<Rigidbody2D>().AddForce(new Vector2(-pushForce, 0));
         }
         if(moveUp) {
-            rigidbody2D.AddForce(new Vector2(0, pushForce));
+            GetComponent<Rigidbody2D>().AddForce(new Vector2(0, pushForce));
         }
         if(moveDown) {
-            rigidbody2D.AddForce(new Vector2(0, -pushForce));
+            GetComponent<Rigidbody2D>().AddForce(new Vector2(0, -pushForce));
         }
+
+        // Vector2 dir = Vector2.zero;
+        // dir.x = Input.acceleration.x;
+        // dir.y = Input.acceleration.y;
+
+        // dir *= Time.deltaTime;
+        // // transform.Translate(dir * pushForce);
+        // rigidbody2D.AddForce(dir * pushForce);
     }
 }
