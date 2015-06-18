@@ -7,6 +7,7 @@ public class TimerScript : MonoBehaviour {
     public float timer;
 
     void Awake() {
+        // Needed so the timer gameObject persists between levels
         DontDestroyOnLoad(transform.gameObject);
     }
     
