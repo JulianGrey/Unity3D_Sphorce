@@ -2,10 +2,7 @@
 using System.Collections;
 
 public class SphereControl : MonoBehaviour {
-
-    public AudioClip pickup;
-    public AudioClip vortex;
-    public AudioClip ballLost;
+    public AudioManager audioScript;
 
     public GameObject ballDeathAnim;
 
@@ -20,6 +17,7 @@ public class SphereControl : MonoBehaviour {
     private bool inVortex;
 
     void Start() {
+        audioScript = GameObject.Find("AudioHandler").GetComponent<AudioManager>();
         GetComponent<AudioSource>().Stop();
         ballExists = true;
     }
@@ -27,7 +25,7 @@ public class SphereControl : MonoBehaviour {
     void OnCollisionEnter2D(Collision2D collision) {
         if(collision.gameObject.tag == "LevelBlock") {
             if(ballExists) {
-                AudioSource.PlayClipAtPoint(ballLost, new Vector2(0, 0));
+                AudioSource.PlayClipAtPoint(audioScript.gameSounds[2], new Vector2(0, 0));
                 Instantiate(ballDeathAnim, gameObject.transform.position, Quaternion.identity);
                 ballExists = false;
             }
@@ -47,15 +45,11 @@ public class SphereControl : MonoBehaviour {
             }
         }
         if(collider.gameObject.tag == "Objective") {
-            //AudioSource.PlayClipAtPoint(pickup, GameObject.Find("Audio").transform.position);
-            AudioSource.PlayClipAtPoint(pickup, Camera.main.transform.position);
+            AudioSource.PlayClipAtPoint(audioScript.gameSounds[1], Camera.main.transform.position);
             GameObject.Find("Actions").GetComponent<GameControl>().gotItems++;
             Destroy(collider.gameObject);
         }
         if(collider.gameObject.tag == "RightForce" || collider.gameObject.tag == "LeftForce" || collider.gameObject.tag == "UpForce" || collider.gameObject.tag == "DownForce") {
-            //GetComponent<AudioSource>().clip = vortex;
-            //GetComponent<AudioSource>().Play();
-
             if(collider.gameObject.tag == "RightForce") {
                 moveRight = true;
             }
@@ -73,9 +67,6 @@ public class SphereControl : MonoBehaviour {
 
     void OnTriggerExit2D(Collider2D collider) {
         if(collider.gameObject.tag == "RightForce" || collider.gameObject.tag == "LeftForce" || collider.gameObject.tag == "UpForce" || collider.gameObject.tag == "DownForce") {
-            //GetComponent<AudioSource>().clip = vortex;
-            //GetComponent<AudioSource>().Stop();
-
             if(collider.gameObject.tag == "RightForce") {
                 moveRight = false;
             }
@@ -104,13 +95,5 @@ public class SphereControl : MonoBehaviour {
         if(moveDown) {
             GetComponent<Rigidbody2D>().AddForce(new Vector2(0, -pushForce));
         }
-
-        // Vector2 dir = Vector2.zero;
-        // dir.x = Input.acceleration.x;
-        // dir.y = Input.acceleration.y;
-
-        // dir *= Time.deltaTime;
-        // // transform.Translate(dir * pushForce);
-        // rigidbody2D.AddForce(dir * pushForce);
     }
 }
