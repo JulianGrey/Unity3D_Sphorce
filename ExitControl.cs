@@ -4,7 +4,7 @@ using System.Collections;
 public class ExitControl : MonoBehaviour {
     
     void Update() {
-        if(GameObject.Find("Actions").GetComponent<GameControl>().canFinish) {
+        if(GameObject.Find("Level").GetComponent<GameControl>().canFinish) {
             gameObject.GetComponent<Renderer>().enabled = false;
         }
         else {
