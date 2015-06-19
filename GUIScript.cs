@@ -5,15 +5,26 @@ using System.Collections;
 public class GUIScript : MonoBehaviour {
     private GameControl gameControlScript;
 
-    public Canvas gameplayCanvas;
-    public Canvas howToPlayCanvas;
-    public Canvas mainMenuCanvas;
-    public Canvas pauseCanvas;
+    public Canvas[] canvases;
+
+    private Canvas gameplayCanvas;
+    private Canvas howToPlayCanvas;
+    private Canvas mainMenuCanvas;
+    private Canvas pauseCanvas;
+    private Canvas levelCompleteCanvas;
 
     public string nextLevel;
 
     private bool howToPlay;
     private bool settings;
+
+    void Awake() {
+        gameplayCanvas = canvases[0];
+        howToPlayCanvas = canvases[1];
+        mainMenuCanvas = canvases[2];
+        pauseCanvas = canvases[3];
+        levelCompleteCanvas = canvases[4];
+    }
 
     public void StartNextLevel() {
         if(mainMenuCanvas.enabled) {
@@ -85,6 +96,14 @@ public class GUIScript : MonoBehaviour {
         }
         else {
             gameplayCanvas.enabled = true;
+        }
+        if(gameControlScript != null) {
+            if(gameControlScript.levelWin) {
+                levelCompleteCanvas.enabled = true;
+            }
+            else {
+                levelCompleteCanvas.enabled = false;
+            }
         }
     }
 }
