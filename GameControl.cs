@@ -31,7 +31,7 @@ public class GameControl : MonoBehaviour {
     public bool timing = false;
     private bool itemCount = false;
     private bool gameWin = false;
-    private bool gameOver = false;
+    public bool gameOver = false;
     public bool paused = false;
     private bool settings = false;
     public bool cameraFollowBall = false;
@@ -90,6 +90,9 @@ public class GameControl : MonoBehaviour {
         if(!gameOver) {
             GetComponent<AudioSource>().PlayOneShot(audioScript.gameSounds[4]);
             gameOver = true;
+        }
+        if(Input.GetKeyDown(KeyCode.Space) || Input.touchCount == 1) {
+            GameObject.Find("GUIHandler").GetComponent<GUIScript>().GoToMainMenu();
         }
         timing = false;
         LevelLoad();
