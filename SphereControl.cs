@@ -29,15 +29,15 @@ public class SphereControl : MonoBehaviour {
                 Instantiate(ballDeathAnim, gameObject.transform.position, Quaternion.identity);
                 ballExists = false;
             }
-            GameObject.Find("Actions").GetComponent<GameControl>().respawn = true;
+            GameObject.Find("Level").GetComponent<GameControl>().respawn = true;
             Destroy(gameObject);
         }
     }
 
     void OnTriggerEnter2D(Collider2D collider) {
         if(collider.gameObject.tag == "Finish") {
-            if(GameObject.Find("Actions").GetComponent<GameControl>().canFinish) {
-                GameObject.Find("Actions").GetComponent<GameControl>().levelWin = true;
+            if(GameObject.Find("Level").GetComponent<GameControl>().canFinish) {
+                GameObject.Find("Level").GetComponent<GameControl>().levelWin = true;
                 Destroy(gameObject);
             }
             else {
@@ -46,7 +46,7 @@ public class SphereControl : MonoBehaviour {
         }
         if(collider.gameObject.tag == "Objective") {
             AudioSource.PlayClipAtPoint(audioScript.gameSounds[1], Camera.main.transform.position);
-            GameObject.Find("Actions").GetComponent<GameControl>().gotItems++;
+            GameObject.Find("Level").GetComponent<GameControl>().gotItems++;
             Destroy(collider.gameObject);
         }
         if(collider.gameObject.tag == "RightForce" || collider.gameObject.tag == "LeftForce" || collider.gameObject.tag == "UpForce" || collider.gameObject.tag == "DownForce") {
