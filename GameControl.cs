@@ -8,22 +8,25 @@ public class GameControl : MonoBehaviour {
     public GameObject ball;
     public GameObject objItem;
     private GameObject[] currentObjectives;
-        
+
     public Transform ballSpawnPoint;
-    public Transform[] objSpawnPoint;
-    public uint livesLeft;
-    public uint gotItems = 0;
-    private uint levelItems = 0;
+    public Transform[] objSpawnPoints;
+    public GameObject directionalLight;
+
+    public int livesLeft;
+    public int gotItems = 0;
+    private int levelItems = 0;
 
     private float nextRespawnTime = 2.0f;
     private float levelGravity = 9.81f * 2.5f;
     private float gyroscopeSensitivityModifier = 1.2f;
+    public float orthographicSize;
     
     public string nextLevel;
 
     public bool respawn = false;
     public bool levelWin = false;
-    private bool levelStart = true;
+    public bool levelStart = true;
     public bool canFinish = false;
     public bool timing = false;
     private bool itemCount = false;
@@ -45,6 +48,7 @@ public class GameControl : MonoBehaviour {
 
     void Update() {
         if(!paused && !levelWin && !gameOver) {
+            #region PCBinds
             //if(Input.GetKeyDown(KeyCode.RightArrow) || Input.acceleration.x > Input.acceleration.y) {
             //    Physics2D.gravity = new Vector2(levelGravity, 0);
 
@@ -73,7 +77,7 @@ public class GameControl : MonoBehaviour {
             //        timing = true;
             //    }
             //}
-
+            #endregion
             Physics2D.gravity = new Vector2(levelGravity * (Input.acceleration.x * gyroscopeSensitivityModifier),
                                             levelGravity * (Input.acceleration.y * gyroscopeSensitivityModifier));
 
@@ -166,16 +170,16 @@ public class GameControl : MonoBehaviour {
 
     void AddObjectives() {
         if(itemCount == true) {
-            for(int i = 0; i < objSpawnPoint.Length; i++) {
-                Instantiate(objItem, objSpawnPoint[i].position, Quaternion.identity);
+            for(int i = 0; i < objSpawnPoints.Length; i++) {
+                Instantiate(objItem, objSpawnPoints[i].position, Quaternion.identity);
                 levelItems++;
             }
             itemCount = false;
         }
 
         else if(itemCount == false) {
-            for(int i = 0; i < objSpawnPoint.Length; i++) {
-                Instantiate(objItem, objSpawnPoint[i].position, Quaternion.identity);
+            for(int i = 0; i < objSpawnPoints.Length; i++) {
+                Instantiate(objItem, objSpawnPoints[i].position, Quaternion.identity);
             }
         }
     }
