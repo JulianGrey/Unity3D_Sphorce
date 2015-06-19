@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class CameraScript : MonoBehaviour {
+    private GameControl gameControlScript;
 
     private Color cyan = new Color(86.0f/255.0f, 175.0f/255.0f, 159.0f/255.0f, 1.0f);
     private Color yellow = new Color(182.0f/255.0f, 183.0f/255.0f, 88.0f/255.0f, 1.0f);
@@ -35,6 +36,18 @@ public class CameraScript : MonoBehaviour {
             case 5:
                 GetComponent<Camera>().backgroundColor = purple;
                 break;
+        }
+    }
+
+    void Update() {
+        if(gameControlScript != GameObject.Find("Level")) {
+            if(GameObject.Find("Level") != null) {
+                gameControlScript = GameObject.Find("Level").GetComponent<GameControl>();
+            }
+        }
+        if(gameControlScript != null) {
+            transform.position = gameControlScript.directionalLight.transform.position;
+            transform.GetComponent<Camera>().orthographicSize = gameControlScript.orthographicSize;
         }
     }
 }
