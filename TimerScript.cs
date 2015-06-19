@@ -5,11 +5,6 @@ public class TimerScript : MonoBehaviour {
     
     public string truncTimer = "0.00";
     public float timer;
-
-    void Awake() {
-        // Needed so the timer gameObject persists between levels
-        DontDestroyOnLoad(transform.gameObject);
-    }
     
     void Update () {
         if(Application.loadedLevelName == "Frontend") {
