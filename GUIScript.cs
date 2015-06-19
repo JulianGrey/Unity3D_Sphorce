@@ -5,28 +5,15 @@ using System.Collections;
 public class GUIScript : MonoBehaviour {
     private GameControl gameControlScript;
 
-    public Canvas[] canvases;
-
-    private Canvas gameplayCanvas;
-    private Canvas howToPlayCanvas;
-    private Canvas mainMenuCanvas;
-    private Canvas pauseCanvas;
-    private Canvas levelCompleteCanvas;
-    private Canvas gameOverCanvas;
-
-    public string nextLevel;
+    public Canvas gameplayCanvas;
+    public Canvas howToPlayCanvas;
+    public Canvas mainMenuCanvas;
+    public Canvas pauseCanvas;
+    public Canvas levelCompleteCanvas;
+    public Canvas gameOverCanvas;
 
     private bool howToPlay;
     private bool settings;
-
-    void Awake() {
-        gameplayCanvas = canvases[0];
-        howToPlayCanvas = canvases[1];
-        mainMenuCanvas = canvases[2];
-        pauseCanvas = canvases[3];
-        levelCompleteCanvas = canvases[4];
-        gameOverCanvas = canvases[5];
-    }
 
     public void ExitGame() {
         Application.Quit();
@@ -47,13 +34,11 @@ public class GUIScript : MonoBehaviour {
     }
 
     public void PauseGame() {
-        gameControlScript.LevelPause();
-        pauseCanvas.enabled = true;
+        gameControlScript.paused = true;
     }
 
     public void ResumeGame() {
-        gameControlScript.LevelPause();
-        pauseCanvas.enabled = false;
+        gameControlScript.paused = false;
     }
 
     public void ReturnToMenu() {
@@ -81,36 +66,43 @@ public class GUIScript : MonoBehaviour {
     }
 
     void Update() {
+
         if(gameControlScript != GameObject.Find("Level")) {
             if(GameObject.Find("Level") != null) {
                 gameControlScript = GameObject.Find("Level").GetComponent<GameControl>();
             }
         }
 
-        if(howToPlay) {
-            howToPlayCanvas.enabled = true;
-        }
-        else {
-            howToPlayCanvas.enabled = false;
-        }
-        if(pauseCanvas.enabled || gameControlScript == null) {
-            gameplayCanvas.enabled = false;
-        }
-        else {
-            gameplayCanvas.enabled = true;
-        }
         if(gameControlScript != null) {
+            gameplayCanvas.enabled = true;
+            mainMenuCanvas.enabled = false;
             if(gameControlScript.levelWin) {
                 levelCompleteCanvas.enabled = true;
             }
             else {
                 levelCompleteCanvas.enabled = false;
             }
+            if(gameControlScript.paused) {
+                pauseCanvas.enabled = true;
+            }
+            else {
+                pauseCanvas.enabled = false;
+            }
             if(gameControlScript.gameOver) {
                 gameOverCanvas.enabled = true;
             }
             else {
                 gameOverCanvas.enabled = false;
+            }
+        }
+        else {
+            gameplayCanvas.enabled = false;
+            mainMenuCanvas.enabled = true;
+            if(howToPlay) {
+                howToPlayCanvas.enabled = true;
+            }
+            else {
+                howToPlayCanvas.enabled = false;
             }
         }
     }
