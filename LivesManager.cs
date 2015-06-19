@@ -10,11 +10,14 @@ public class LivesManager : MonoBehaviour {
         text = GetComponent<Text>();
 	}
 
-    void Start() {
-        gameControlScript = GameObject.Find("Actions").GetComponent<GameControl>();
-    }
-
     void Update() {
-        text.text = "Lives left: " + gameControlScript.livesLeft;
+        if(gameControlScript != GameObject.Find("Level")) {
+            if(GameObject.Find("Level") != null) {
+                gameControlScript = GameObject.Find("Level").GetComponent<GameControl>();
+            }
+        }
+        if(gameControlScript != null) {
+            text.text = "Lives left: " + gameControlScript.livesLeft;
+        }
     }
 }
