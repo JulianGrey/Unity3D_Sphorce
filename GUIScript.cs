@@ -3,24 +3,31 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class GUIScript : MonoBehaviour {
-    public GameControl gameControlScript;
+    private GameControl gameControlScript;
 
-    public Canvas mainMenuCanvas;
     public Canvas gameplayCanvas;
     public Canvas howToPlayCanvas;
+    public Canvas mainMenuCanvas;
     public Canvas pauseCanvas;
+
+    public string nextLevel;
 
     private bool howToPlay;
     private bool settings;
 
-    void Start() {
-        gameControlScript = GameObject.Find("Actions").GetComponent<GameControl>();
-    }
-
-    public void StartGame() {
-        mainMenuCanvas.enabled = false;
-        gameplayCanvas.enabled = true;
-        Application.LoadLevel("Level_01");
+    public void StartNextLevel() {
+        if(mainMenuCanvas.enabled) {
+            mainMenuCanvas.enabled = false;
+        }
+        if(!gameplayCanvas.enabled) {
+            gameplayCanvas.enabled = true;
+        }
+        if(gameControlScript != null) {
+            Application.LoadLevel(gameControlScript.nextLevel);
+        }
+        else {
+            Application.LoadLevel("Level_01");
+        }
     }
 
     public void PauseGame() {
@@ -49,7 +56,9 @@ public class GUIScript : MonoBehaviour {
     public void GoToMainMenu() {
         Destroy(GameObject.Find("AudioHandler"));
         Destroy(GameObject.Find("CanvasHandler"));
+        Destroy(GameObject.Find("EventSystem"));
         Destroy(GameObject.Find("GUIHandler"));
+        Destroy(GameObject.Find("Main Camera"));
         Destroy(GameObject.Find("TimerHandler"));
         Application.LoadLevel("Frontend");
     }
@@ -59,13 +68,19 @@ public class GUIScript : MonoBehaviour {
     }
 
     void Update() {
+        if(gameControlScript != GameObject.Find("Level")) {
+            if(GameObject.Find("Level") != null) {
+                gameControlScript = GameObject.Find("Level").GetComponent<GameControl>();
+            }
+        }
+
         if(howToPlay) {
             howToPlayCanvas.enabled = true;
         }
         else {
             howToPlayCanvas.enabled = false;
         }
-        if(pauseCanvas.enabled) {
+        if(pauseCanvas.enabled || gameControlScript == null) {
             gameplayCanvas.enabled = false;
         }
         else {
