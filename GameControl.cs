@@ -4,6 +4,7 @@ using System.Collections;
 public class GameControl : MonoBehaviour {
 
     public AudioManager audioScript;
+    private GUIScript guiScript;
 
     public GameObject ball;
     public GameObject objItem;
@@ -38,10 +39,12 @@ public class GameControl : MonoBehaviour {
 
     void Start() {
         audioScript = GameObject.Find("AudioHandler").GetComponent<AudioManager>();
+        guiScript = GameObject.Find("GUIHandler").GetComponent<GUIScript>();
 
         itemCount = true;
         gameOver = false;
         gameWin = false;
+        paused = false;
         Time.timeScale = 1.0f;
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
     }
@@ -92,7 +95,7 @@ public class GameControl : MonoBehaviour {
             gameOver = true;
         }
         if(Input.GetKeyDown(KeyCode.Space) || Input.touchCount == 1) {
-            GameObject.Find("GUIHandler").GetComponent<GUIScript>().GoToMainMenu();
+            guiScript.GoToMainMenu();
         }
         timing = false;
         LevelLoad();
@@ -223,17 +226,6 @@ public class GameControl : MonoBehaviour {
 
         if(levelWin == true) {
             LevelWin();
-        }
-
-        if(!levelWin && !gameOver) {
-            if(Input.GetKeyDown(KeyCode.Escape)) {
-                PlaySelectSound();
-                LevelPause();
-
-                if(settings) {
-                    settings = false;
-                }
-            }
         }
     }
 }
