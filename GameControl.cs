@@ -46,6 +46,105 @@ public class GameControl : MonoBehaviour {
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
     }
 
+    void AddBall() {
+        Physics2D.gravity = new Vector2(0, 0);
+
+        GameObject ballInstance = Instantiate(ball, ballSpawnPoint.position, Quaternion.identity) as GameObject;
+        ballInstance.name = "Current Ball";
+    }
+
+    void AddObjectives() {
+        if(itemCount == true) {
+            for(int i = 0; i < objSpawnPoints.Length; i++) {
+                Instantiate(objItem, objSpawnPoints[i].position, Quaternion.identity);
+                levelItems++;
+            }
+            itemCount = false;
+        }
+
+        else if(itemCount == false) {
+            for(int i = 0; i < objSpawnPoints.Length; i++) {
+                Instantiate(objItem, objSpawnPoints[i].position, Quaternion.identity);
+            }
+        }
+    }
+
+    void LevelLoad() {
+        if(levelWin) {
+            if(!gameWin) {
+                if(Input.GetKeyDown(KeyCode.Space) || Input.touchCount == 1) {
+                    Application.LoadLevel(nextLevel);
+                }
+            }
+            else {
+                if(Input.GetKeyDown(KeyCode.Space) || Input.touchCount == 1) {
+                    MainMenu();
+                }
+            }
+        }
+    }
+
+    void LevelLose() {
+        livesLeft = 0;
+
+        if(!gameOver) {
+            GetComponent<AudioSource>().PlayOneShot(audioScript.gameSounds[4]);
+            gameOver = true;
+        }
+        timing = false;
+        LevelLoad();
+    }
+
+    public void LevelPause() {
+        if(Time.timeScale == 0f) {
+            Time.timeScale = 1.0f;
+            paused = false;
+        }
+        else {
+            Time.timeScale = 0f;
+            paused = true;
+        }
+    }
+
+    void LevelWin() {
+        if(timing) {
+            GetComponent<AudioSource>().PlayOneShot(audioScript.gameSounds[3]);
+
+            timing = false;
+        }
+
+        if(nextLevel == "Frontend") {
+            gameWin = true;
+        }
+
+        LevelLoad();
+    }
+
+    void MainMenu() {
+        if(GameObject.Find("Timer") != null) {
+            Destroy(GameObject.Find("Timer"));
+        }
+        if(GameObject.Find("Audio") != null) {
+            Destroy(GameObject.Find("Audio"));
+        }
+
+        Application.LoadLevel("Frontend");
+    }
+
+    void PlaySelectSound() {
+        GetComponent<AudioSource>().PlayOneShot(audioScript.gameSounds[0]);
+    }
+
+    void RemoveObjectives() {
+        if(respawn) {
+            currentObjectives = GameObject.FindGameObjectsWithTag("Objective");
+
+            for(var i = 0; i < currentObjectives.Length; i++) {
+                Destroy(currentObjectives[i]);
+            }
+        }
+    }
+
     void Update() {
         if(!paused && !levelWin && !gameOver) {
             #region PCBinds
@@ -133,104 +232,5 @@ public class GameControl : MonoBehaviour {
                 }
             }
         }
-    }
-
-    void MainMenu() {
-        if(GameObject.Find ("Timer") != null) {
-            Destroy(GameObject.Find("Timer"));
-        }
-        if(GameObject.Find ("Audio") != null) {
-            Destroy(GameObject.Find("Audio"));
-        }
-
-        Application.LoadLevel("Frontend");
-    }
-
-    void LevelLoad() {
-        if(levelWin) {
-            if(!gameWin) {
-                if(Input.GetKeyDown(KeyCode.Space) || Input.touchCount == 1) {
-                    Application.LoadLevel(nextLevel);
-                }
-            }
-            else {
-                if(Input.GetKeyDown(KeyCode.Space) || Input.touchCount == 1) {
-                    MainMenu();
-                }
-            }
-        }
-    }
-
-    void AddBall() {
-        Physics2D.gravity = new Vector2(0, 0);
-
-        GameObject ballInstance = Instantiate(ball, ballSpawnPoint.position, Quaternion.identity) as GameObject;
-        ballInstance.name = "Current Ball";
-    }
-
-    void AddObjectives() {
-        if(itemCount == true) {
-            for(int i = 0; i < objSpawnPoints.Length; i++) {
-                Instantiate(objItem, objSpawnPoints[i].position, Quaternion.identity);
-                levelItems++;
-            }
-            itemCount = false;
-        }
-
-        else if(itemCount == false) {
-            for(int i = 0; i < objSpawnPoints.Length; i++) {
-                Instantiate(objItem, objSpawnPoints[i].position, Quaternion.identity);
-            }
-        }
-    }
-
-    void RemoveObjectives() {
-        if(respawn) {
-            currentObjectives = GameObject.FindGameObjectsWithTag("Objective");
-
-            for(var i = 0; i < currentObjectives.Length; i++) {
-                Destroy(currentObjectives[i]);
-            }
-        }
-    }
-
-    void PlaySelectSound() {
-        GetComponent<AudioSource>().PlayOneShot(audioScript.gameSounds[0]);
-    }
-
-    public void LevelPause() {
-        if(Time.timeScale == 0f) {
-            Time.timeScale = 1.0f;
-            paused = false;
-        }
-        else {
-            Time.timeScale = 0f;
-            paused = true;
-        }
-    }
-
-    void LevelWin() {
-        if(timing) {
-            GetComponent<AudioSource>().PlayOneShot(audioScript.gameSounds[3]);
-
-            timing = false;
-        }
-
-        if(nextLevel == "Frontend") {
-            gameWin = true;
-        }
-
-        LevelLoad();
-    }
-
-    void LevelLose() {
-        livesLeft = 0;
-
-        if(!gameOver) {
-            GetComponent<AudioSource>().PlayOneShot(audioScript.gameSounds[4]);
-            gameOver = true;
-        }
-        timing = false;
-        LevelLoad();
     }
 }
