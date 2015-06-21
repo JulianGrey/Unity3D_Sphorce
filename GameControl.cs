@@ -12,7 +12,6 @@ public class GameControl : MonoBehaviour {
 
     public Transform ballSpawnPoint;
     public Transform[] objSpawnPoints;
-    public GameObject directionalLight;
 
     public int livesLeft;
     public int gotItems = 0;
@@ -21,7 +20,6 @@ public class GameControl : MonoBehaviour {
     private float nextRespawnTime = 2.0f;
     private float levelGravity = 9.81f * 2.5f;
     private float gyroscopeSensitivityModifier = 1.2f;
-    public float orthographicSize;
     
     public string nextLevel;
 
@@ -31,19 +29,24 @@ public class GameControl : MonoBehaviour {
     public bool canFinish = false;
     public bool timing = false;
     private bool itemCount = false;
-    private bool gameWin = false;
     public bool gameOver = false;
     public bool paused = false;
-    private bool settings = false;
-    public bool cameraFollowBall = false;
 
-    void Start() {
+    void Awake() {
         audioScript = GameObject.Find("AudioHandler").GetComponent<AudioManager>();
         guiScript = GameObject.Find("GUIHandler").GetComponent<GUIScript>();
+    }
+    
+    void Start() {
+        guiScript.pauseCanvas.enabled = false;
+        guiScript.mainMenuCanvas.enabled = false;
+        guiScript.howToPlayCanvas.enabled = false;
+        guiScript.levelCompleteCanvas.enabled = false;
+        guiScript.gameOverCanvas.enabled = false;
+        guiScript.gameplayCanvas.enabled = true;
 
         itemCount = true;
         gameOver = false;
-        gameWin = false;
         paused = false;
         Time.timeScale = 1.0f;
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
@@ -74,15 +77,8 @@ public class GameControl : MonoBehaviour {
 
     void LevelLoad() {
         if(levelWin) {
-            if(!gameWin) {
-                if(Input.GetKeyDown(KeyCode.Space) || Input.touchCount == 1) {
-                    Application.LoadLevel(nextLevel);
-                }
-            }
-            else {
-                if(Input.GetKeyDown(KeyCode.Space) || Input.touchCount == 1) {
-                    MainMenu();
-                }
+            if(Input.GetKeyDown(KeyCode.Space) || Input.touchCount == 1) {
+                guiScript.StartNextLevel();
             }
         }
     }
@@ -118,27 +114,7 @@ public class GameControl : MonoBehaviour {
 
             timing = false;
         }
-
-        if(nextLevel == "Frontend") {
-            gameWin = true;
-        }
-
         LevelLoad();
-    }
-
-    void MainMenu() {
-        if(GameObject.Find("Timer") != null) {
-            Destroy(GameObject.Find("Timer"));
-        }
-        if(GameObject.Find("Audio") != null) {
-            Destroy(GameObject.Find("Audio"));
-        }
-
-        Application.LoadLevel("Frontend");
-    }
-
-    void PlaySelectSound() {
-        GetComponent<AudioSource>().PlayOneShot(audioScript.gameSounds[0]);
     }
 
     void RemoveObjectives() {
