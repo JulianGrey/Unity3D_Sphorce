@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class SphereControl : MonoBehaviour {
-    public AudioManager audioScript;
+    private AudioManager audioScript;
 
     public GameObject ballDeathAnim;
 
@@ -16,8 +16,11 @@ public class SphereControl : MonoBehaviour {
     private bool ballExists;
     private bool inVortex;
 
-    void Start() {
+    void Awake() {
         audioScript = GameObject.Find("AudioHandler").GetComponent<AudioManager>();
+    }
+    
+    void Start() {
         GetComponent<AudioSource>().Stop();
         ballExists = true;
     }
