@@ -12,8 +12,13 @@ public class GUIScript : MonoBehaviour {
     public Canvas levelCompleteCanvas;
     public Canvas gameOverCanvas;
 
+    private Camera gameCamera;
+
     private bool howToPlay;
-    private bool settings;
+
+    void Awake() {
+        gameCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+    }
 
     public void ExitGame() {
         Application.Quit();
@@ -24,7 +29,6 @@ public class GUIScript : MonoBehaviour {
         Destroy(GameObject.Find("CanvasHandler"));
         Destroy(GameObject.Find("EventSystem"));
         Destroy(GameObject.Find("GUIHandler"));
-        Destroy(GameObject.Find("Main Camera"));
         Destroy(GameObject.Find("TimerHandler"));
         Application.LoadLevel("Frontend");
     }
@@ -34,18 +38,19 @@ public class GUIScript : MonoBehaviour {
     }
 
     public void PauseGame() {
-        gameControlScript.paused = true;
+        pauseCanvas.enabled = true;
+        gameplayCanvas.enabled = false;
+        gameControlScript.LevelPause();
     }
 
     public void ResumeGame() {
-        gameControlScript.paused = false;
+        pauseCanvas.enabled = false;
+        gameplayCanvas.enabled = true;
+        gameControlScript.LevelPause();
     }
 
     public void ReturnToMenu() {
-        if(settings) {
-            settings = false;
-        }
-        else if(howToPlay) {
+        if(howToPlay) {
             howToPlay = false;
         }
     }
@@ -58,7 +63,12 @@ public class GUIScript : MonoBehaviour {
             gameplayCanvas.enabled = true;
         }
         if(gameControlScript != null) {
-            Application.LoadLevel(gameControlScript.nextLevel);
+            if(gameControlScript.nextLevel == "Frontend") {
+                GoToMainMenu();
+            }
+            else {
+                Application.LoadLevel(gameControlScript.nextLevel);
+            }
         }
         else {
             Application.LoadLevel("Level_01");
@@ -73,23 +83,35 @@ public class GUIScript : MonoBehaviour {
             }
         }
 
+        if(gameCamera != null) {
+            mainMenuCanvas.worldCamera = gameCamera;
+            gameplayCanvas.worldCamera = gameCamera;
+            howToPlayCanvas.worldCamera = gameCamera;
+            pauseCanvas.worldCamera = gameCamera;
+            levelCompleteCanvas.worldCamera = gameCamera;
+            gameOverCanvas.worldCamera = gameCamera;
+        }
+
         if(gameControlScript != null) {
             gameplayCanvas.enabled = true;
             mainMenuCanvas.enabled = false;
             if(gameControlScript.levelWin) {
                 levelCompleteCanvas.enabled = true;
+                gameplayCanvas.enabled = false;
+                pauseCanvas.enabled = false;
             }
             else {
                 levelCompleteCanvas.enabled = false;
             }
             if(gameControlScript.paused) {
-                pauseCanvas.enabled = true;
+                gameplayCanvas.enabled = false;
             }
             else {
-                pauseCanvas.enabled = false;
+                gameplayCanvas.enabled = true;
             }
             if(gameControlScript.gameOver) {
                 gameOverCanvas.enabled = true;
+                gameplayCanvas.enabled = false;
             }
             else {
                 gameOverCanvas.enabled = false;
